@@ -1,24 +1,26 @@
 require 'sinatra'
 require_relative './helpers/blackjack.rb'
+require_relative './helpers/json_helper.rb'
 require 'pry-byebug'
 require 'json'
 
-helpers BlackJack
+helpers BlackJack, JSONHelper
 
 enable :sessions
 
 get '/' do
   players = load_players(session["players"]) if session["players"]
   players = BlackJack::Table.new(players).players
+  session["players"] = save_players(players)
   erb :blackjack, locals: { players: players }
-  session["players"] = players.map { |player| player.to_json }.to_json
 end
 
 post '/blackjack/hit' do
-  players = JSON.parse(session["players"])
+  players = load_players(session["players"])
   table = BlackJack::Table.new(players)
   table.draw_card(players[1])
-  session["players"] = players.to_json
+  players = table.players
+  session["players"] = save_players(players)
   redirect("/")
 end
 

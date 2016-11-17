@@ -9,6 +9,7 @@ module BlackJack
 
     def from_json(json)
       rank, suit = JSON.parse(json)
+      Card.new(rank, suit)
     end
   end
 
