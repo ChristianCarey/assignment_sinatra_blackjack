@@ -20,6 +20,10 @@ post '/blackjack/hit' do
   table = BlackJack::Table.new(players)
   table.draw_card(players[1])
   players = table.players
+  if players[1].total > 21
+    players[0].table = table
+    players[0].play
+  end
   session["players"] = save_players(players)
   redirect("/")
 end

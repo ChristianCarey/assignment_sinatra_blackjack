@@ -1,7 +1,7 @@
 module BlackJack
 # require 'pry-byebug'
 
-  Card = Struct.new(:rank, :suit) do 
+  Card = Struct.new(:rank, :suit) do
 
     def to_json
       [rank, suit].to_json
@@ -84,8 +84,8 @@ module BlackJack
         elsif ["J", "Q", "K"].include?(card.rank)
           rank = 10
         else
-          rank = card.rank
-        end            
+          rank = card.rank.to_i
+        end
         total += rank
       end
 
