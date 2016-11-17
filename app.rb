@@ -25,6 +25,11 @@ post '/blackjack/hit' do
 end
 
 post '/blackjack/stay' do
-  players = JSON.parse(session["players"])
-
+  players = load_players(session["players"])
+  table = BlackJack::Table.new(players)
+  players[0].table = table
+  players[0].play
+  players = table.players
+  session["players"] = save_players(players)
+  redirect("/")
 end
