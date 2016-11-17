@@ -10,15 +10,16 @@ enable :sessions
 
 get '/' do
   players = load_players(session["players"]) if session["players"]
-  players = BlackJack::Table.new(players).players
+  game = Game.new(players)
+  players = game.players
   session["players"] = save_players(players)
   erb :blackjack, locals: { players: players }
 end
 
 post '/blackjack/hit' do
   players = load_players(session["players"])
-  table = BlackJack::Table.new(players)
-  table.draw_card(players[1])
+  game = Game.new(players)
+  game.human_hit
   players = table.players
   if players[1].total > 21
     players[0].table = table

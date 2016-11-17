@@ -1,5 +1,37 @@
+require_relative 'json_helper.rb'
 module BlackJack
 # require 'pry-byebug'
+
+  class Game
+
+    attr_accessor :players, :table
+
+    def initialize(players = nil)
+      @players = players || [Dealer.new, HumanPlayer.new]
+      @table = Table.new(@players)
+    end
+
+    def players
+      @table.players
+    end
+
+    def dealer
+      @table.players[0]
+    end
+
+    def human
+      @table.players[1]
+    end
+
+    def human_hit
+      @table.draw_card(human)
+      dealer_play if human.total > 21
+    end
+
+    def dealer_play
+      @table.draw(dealer) until dealer.total >= 17
+    end
+  end
 
   Card = Struct.new(:rank, :suit) do
 
@@ -64,7 +96,7 @@ module BlackJack
   end
 
   class Player
-    attr_accessor :hand, :table
+    attr_accessor :hand
       def initialize(hand = [])
       @hand = hand
     end
@@ -104,10 +136,6 @@ module BlackJack
         count +=1 if card.rank == "A"
       end
       count
-    end
-
-    def play
-      @table.draw_card(self) until total >= 17
     end
   end
 

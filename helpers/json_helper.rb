@@ -21,7 +21,5 @@ module JSONHelper
   def save_players(players)
     players.map { |player| player.to_json }.to_json
   end
-
-
 end
 
