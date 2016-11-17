@@ -1,15 +1,23 @@
 
-<p>Dealer: 
+<p>Dealer:
 <br>
 <% players[0].hand.each do |card| %>
   <%= card.rank %> of <%= card.suit %>
   <br>
-<% end %>  
+<% end %>
 </p>
-<p>Player: 
+<p>Player:
 <br>
 <% players[1].hand.each do |card| %>
   <%= card.rank %> of <%= card.suit %>
   <br>
-<% end %>  
+<% end %>
 </p>
+
+<form action="/blackjack/hit" method="post">
+  <input type="submit" name="turn" value="Hit">
+</form>
+
+<form action="/blackjack/stay" method="post">
+  <input type="submit" name="turn" value="Stay">
+</form>

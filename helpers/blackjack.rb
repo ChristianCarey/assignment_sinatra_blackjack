@@ -1,16 +1,17 @@
 module BlackJack
+# require 'pry-byebug'
 
   Card = Struct.new(:rank, :suit)
 
   class Table
     #holds game state: deck, hands
 
-    attr_accessor :cards_on_table
+    attr_accessor :players
 
-    def initialize(players = [Dealer.new, HumanPlayer.new])
-      @players = players
+    def initialize(players = nil)
+      @players = players || [Dealer.new, HumanPlayer.new]
       @deck = create_deck
-      initial_deal if @players[0].hand.nil?
+      initial_deal if @players[0].hand.empty?
     end
 
     def initial_deal
@@ -23,8 +24,9 @@ module BlackJack
 
     def draw_card(player)
       #subtracts from deck and adds to hands on table
+      # binding.pry
       card = @deck.shuffle.pop
-      player.hand << card 
+      player.hand << card
     end
 
     def create_deck
@@ -53,11 +55,12 @@ module BlackJack
 
   class Player
     attr_accessor :hand
-    def initialze(hand = [])
-      @hand = hand 
+    def initialize(hand = [])
+      @hand = hand
     end
-    def hit
 
+    def hit
+      
     end
 
   end
