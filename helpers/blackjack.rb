@@ -6,21 +6,20 @@ module BlackJack
 
     attr_accessor :players, :table
 
-    def initialize(players = nil)
-      @players = players || [Dealer.new, HumanPlayer.new]
-      @table = Table.new(@players)
-    end
-
-    def players
-      @table.players
+    def initialize(args = {})
+      @dealer = args.fetch("dealer", Dealer.new)
+      @human = args.fetch("human", Human.new)
+      @human.bet = args.fetch("bet", 0)
+      @human.bankroll = args.fetch("bankroll", 1000)
+      @table = Table.new(@dealer, @human)
     end
 
     def dealer
-      @table.players[0]
+      @table.dealer
     end
 
     def human
-      @table.players[1]
+      @table.human
     end
 
     def human_hit
@@ -31,7 +30,32 @@ module BlackJack
     def dealer_play
       @table.draw_card(dealer) until dealer.total >= 17
     end
+
+    def to_json
+      {
+        "dealer" => dealer.hand.map { |card| card.to_json },
+        "human" => human.hand.map { |card| card.to_json },
+        "bet" => human.bet,
+        "bankroll" => humans.bankroll
+      }.to_json
+    end
+
+    def from_json(json)
+      return Game.new if json.nil?
+      game_state = JSON.parse(json)
+      dealer_hand = game_state["dealer"].map { |card| Card.new.from_json(card) }
+      human_hand = game_state["human"].map { |card| Card.new.from_json(card) }
+      game_state["dealer"] = Dealer.new(dealer_hand)
+      game_state["human"] = Human.new(human_hand)
+      Game.new(game_state)
+    end
+
+    def set_bet(bet)
+      human.bet = bet
+      human.bankroll -= bet
+    end
   end
+
 
   Card = Struct.new(:rank, :suit) do
 
@@ -48,20 +72,21 @@ module BlackJack
   class Table
     #holds game state: deck, hands
 
-    attr_accessor :players
+    attr_accessor :dealer, :human
 
-    def initialize(players = nil)
-      @players = players || [Dealer.new, HumanPlayer.new]
+    def initialize(dealer, human)
+      @dealer = dealer
+      @human = human 
       @deck = create_deck
-      initial_deal if @players[0].hand.empty?
+      initial_deal if @dealer.hand.empty?
     end
 
     def initial_deal
       #players card are showing, deler shows only one
-      draw_card(@players[0])
-      draw_card(@players[0])
-      draw_card(@players[1])
-      draw_card(@players[1])
+      draw_card(@dealer)
+      draw_card(@dealer)
+      draw_card(@human)
+      draw_card(@human)
     end
 
     def draw_card(player)
@@ -87,16 +112,12 @@ module BlackJack
     end
 
     def cards_on_table
-      cards = []
-      @players.each do |player|
-        cards << player.hand
-      end
-      cards.flatten
+      [ @dealer.hand, @human.hand ].flatten
     end
   end
 
   class Player
-    attr_accessor :hand
+    attr_accessor :hand, :bet, :bankroll
       def initialize(hand = [])
       @hand = hand
     end
@@ -139,7 +160,7 @@ module BlackJack
     end
   end
 
-  class HumanPlayer < Player
+  class Human < Player
   end
 
   class Dealer < Player

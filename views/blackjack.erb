@@ -1,14 +1,14 @@
 
 <p>Dealer:
 <br>
-<% players[0].hand.each do |card| %>
+<% @game.dealer.hand.each do |card| %>
   <%= card.rank %> of <%= card.suit %>
   <br>
 <% end %>
 </p>
 <p>Player:
 <br>
-<% players[1].hand.each do |card| %>
+<% @game.human.hand.each do |card| %>
   <%= card.rank %> of <%= card.suit %>
   <br>
 <% end %>
