@@ -1,7 +1,10 @@
 require 'sinatra'
 require 'sinatra/reloader'
+require_relative './helpers/blackjack.rb'
+
+helpers BlackJack
 
 get '/' do
-
-  erb :blackjack, locals:
+  table = BlackJack::Table.new.players
+  erb :blackjack, locals: { table: table }
 end
