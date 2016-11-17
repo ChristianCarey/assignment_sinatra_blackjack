@@ -29,7 +29,7 @@ module BlackJack
     end
 
     def dealer_play
-      @table.draw(dealer) until dealer.total >= 17
+      @table.draw_card(dealer) until dealer.total >= 17
     end
   end
 

@@ -8,33 +8,36 @@ helpers BlackJack, JSONHelper
 
 enable :sessions
 
-get '/' do
+before do
   players = load_players(session["players"]) if session["players"]
-  game = Game.new(players)
-  players = game.players
+  @game = BlackJack::Game.new(players)
+end
+
+get '/' do
+  erb :bet
+end
+
+get '/deal' do
+  players = @game.players
   session["players"] = save_players(players)
   erb :blackjack, locals: { players: players }
 end
 
 post '/blackjack/hit' do
-  players = load_players(session["players"])
-  game = Game.new(players)
-  game.human_hit
-  players = table.players
-  if players[1].total > 21
-    players[0].table = table
-    players[0].play
-  end
+  @game.human_hit
+  players = @game.players
   session["players"] = save_players(players)
   redirect("/")
 end
 
 post '/blackjack/stay' do
-  players = load_players(session["players"])
-  table = BlackJack::Table.new(players)
-  players[0].table = table
-  players[0].play
-  players = table.players
+  @game.dealer_play
+  players = @game.players
   session["players"] = save_players(players)
   redirect("/")
+end
+
+get '/replay' do
+  session["players"] = nil
+  redirect("/deal")
 end
