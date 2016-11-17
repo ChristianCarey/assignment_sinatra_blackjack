@@ -1,7 +1,16 @@
 module BlackJack
 # require 'pry-byebug'
 
-  Card = Struct.new(:rank, :suit)
+  Card = Struct.new(:rank, :suit) do 
+
+    def to_json
+      [rank, suit].to_json
+    end
+
+    def from_json(json)
+      rank, suit = JSON.parse(json)
+    end
+  end
 
   class Table
     #holds game state: deck, hands
@@ -55,14 +64,15 @@ module BlackJack
 
   class Player
     attr_accessor :hand
-    def initialize(hand = [])
+      def initialize(hand = [])
       @hand = hand
     end
 
-    def hit
-      
+    def to_json
+      @hand.map do |card|
+        card.to_json
+      end.to_json
     end
-
   end
 
   class HumanPlayer < Player
@@ -72,3 +82,5 @@ module BlackJack
   end
 
 end
+
+
