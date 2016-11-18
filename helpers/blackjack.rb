@@ -24,7 +24,7 @@ module BlackJack
 
     def human_hit
       @table.draw_card(human)
-      dealer_play if human.total > 21
+      dealer_play if human.total >= 21 
     end
 
     def dealer_play
@@ -32,11 +32,15 @@ module BlackJack
     end
 
     def over?
-      human.bust?
+      human.bust? || dealer.total >= 17 || dealer.blackjack?
+    end
+
+    def pay
+      human.bankroll += human.bet * 2 if win?
     end
 
     def win?
-      human.total > dealer.total || dealer.bust?
+      (human.total > dealer.total && !human.bust?) || dealer.bust?
     end
 
     def loss?
@@ -66,6 +70,10 @@ module BlackJack
     def set_bet(bet)
       human.bet = bet
       human.bankroll -= bet
+    end
+
+    def bankroll
+      human.bankroll
     end
   end
 

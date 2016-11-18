@@ -1,0 +1,20 @@
+<p>Dealer:
+  <br>    
+  <% if !@game.over? %>
+    <p><%= @game.dealer.hand.first.rank %> of <%= @game.dealer.hand.first.suit %></p>
+    <p>Facedown card.</p>
+  <% else %>
+    <% @game.dealer.hand.each do |card| %>
+      <p><%= card.rank %> of <%= card.suit %></p>
+    <% end %>
+    <p>Total: <%= @game.dealer.total %></p>
+  <% end %>
+</p>
+<p>Player:
+<br>
+<% @game.human.hand.each do |card| %>
+  <p><%= card.rank %> of <%= card.suit %></p>
+<% end %>
+<p>Total: <%= @game.human.total %></p>
+</p>
+<p> Current Bet: <%= @game.human.bet %> </p>

@@ -1,0 +1,18 @@
+<%= erb :'shared/table' %>
+
+<% if @game.win? %>
+  <h3>You win!</h3>
+<% else %>
+  <h3>You lose!</h3>
+<% end %>
+
+<p> Current Bank Roll: <%= @game.human.bankroll %> </p>
+
+<form action='/deal' method='get'>
+  <input type="text" name="bet">
+  <input type="submit" value="Bet again!">
+</form>
+
+<form action="/replay" method="get">
+  <input type="submit" name="turn" value="Replay">
+</form>

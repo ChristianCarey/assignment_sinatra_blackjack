@@ -1,20 +1,4 @@
-
-<p>Dealer:
-<br>
-<% @game.dealer.hand.each do |card| %>
-  <%= card.rank %> of <%= card.suit %>
-  <br>
-<% end %>
-</p>
-<p>Player:
-<br>
-<% @game.human.hand.each do |card| %>
-  <%= card.rank %> of <%= card.suit %>
-  <br>
-<% end %>
-</p>
-<p> Current Bet: <%= @game.human.bet %> </p>
-
+<%= erb :"shared/table" %>
 
 <form action="/blackjack/hit" method="post">
   <input type="submit" name="turn" value="Hit">
@@ -25,5 +9,5 @@
 </form>
 
 <form action="/replay" method="get">
-  <input type="submit" name="turn" value="Deal">
+  <input type="submit" name="turn" value="Replay">
 </form>

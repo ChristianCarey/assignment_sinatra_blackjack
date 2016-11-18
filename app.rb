@@ -18,7 +18,9 @@ get '/' do
 end
 
 get '/deal' do
-  @game.set_bet(params[:bet].to_i)
+  bet = params[:bet].to_i
+  redirect('/') if bet > @game.bankroll
+  @game.set_bet(bet)
   session["game"] = @game.to_json
   erb :blackjack
 end
@@ -31,21 +33,21 @@ end
 
 post '/blackjack/stay' do
   @game.dealer_play
-  @game.winner?
   session["game"] = @game.to_json
-  redirect("/blackjack")
+  redirect("/game_over")
 end
 
 get '/blackjack' do
-  redirect("/gameover") if game.over?
+  redirect("/game_over") if @game.over?
   erb :blackjack
 end
 
 get '/replay' do
-  session["players"] = nil
-  redirect("/deal")
+  session["game"] = nil
+  redirect("/")
 end
 
-get '/gameover' do
-  erb :gameover
+get '/game_over' do
+  @game.pay
+  erb :game_over
 end
