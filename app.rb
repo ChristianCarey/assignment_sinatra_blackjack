@@ -33,6 +33,7 @@ end
 
 post '/blackjack/stay' do
   @game.dealer_play
+  @game.late_over = true
   session["game"] = @game.to_json
   redirect("/game_over")
 end

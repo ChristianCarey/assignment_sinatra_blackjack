@@ -4,7 +4,7 @@ module BlackJack
 
   class Game
 
-    attr_accessor :players, :table
+    attr_accessor :players, :table, :late_over
 
     def initialize(args = {})
       @dealer = args.fetch("dealer", Dealer.new)
@@ -12,6 +12,7 @@ module BlackJack
       @human.bet = args.fetch("bet", 0)
       @human.bankroll = args.fetch("bankroll", 1000)
       @table = Table.new(@dealer, @human)
+      @late_over = args.fetch("late_over", false)
     end
 
     def dealer
@@ -24,7 +25,7 @@ module BlackJack
 
     def human_hit
       @table.draw_card(human)
-      dealer_play if human.total >= 21 
+      dealer_play if human.total >= 21
     end
 
     def dealer_play
@@ -32,7 +33,11 @@ module BlackJack
     end
 
     def over?
-      human.bust? || dealer.total >= 17 || dealer.blackjack?
+      late_over? || human.bust? || dealer.blackjack?
+    end
+
+    def late_over?
+      @late_over
     end
 
     def pay
@@ -53,7 +58,8 @@ module BlackJack
         "dealer" => dealer.hand.map { |card| card.to_json },
         "human" => human.hand.map { |card| card.to_json },
         "bet" => human.bet,
-        "bankroll" => human.bankroll
+        "bankroll" => human.bankroll,
+        "late_over" => late_over
       }.to_json
     end
 
