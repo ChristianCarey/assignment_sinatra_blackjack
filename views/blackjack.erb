@@ -13,6 +13,8 @@
   <br>
 <% end %>
 </p>
+<p> Current Bet: <%= @game.human.bet %> </p>
+
 
 <form action="/blackjack/hit" method="post">
   <input type="submit" name="turn" value="Hit">

@@ -31,12 +31,25 @@ module BlackJack
       @table.draw_card(dealer) until dealer.total >= 17
     end
 
+    def over?
+      human.bust?
+    end
+
+    def win?
+      human.total > dealer.total || dealer.bust?
+    end
+
+    def loss?
+      dealer.blackjack? || dealer.total > human.total || human.bust?
+    end
+
+
     def to_json
       {
         "dealer" => dealer.hand.map { |card| card.to_json },
         "human" => human.hand.map { |card| card.to_json },
         "bet" => human.bet,
-        "bankroll" => humans.bankroll
+        "bankroll" => human.bankroll
       }.to_json
     end
 
@@ -157,6 +170,14 @@ module BlackJack
         count +=1 if card.rank == "A"
       end
       count
+    end
+
+    def bust?
+      total > 21
+    end
+
+    def blackjack?
+      @hand.length == 2 && ace_count == 1 && total == 21
     end
   end
 
