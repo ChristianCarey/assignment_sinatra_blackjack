@@ -81,6 +81,12 @@ module BlackJack
     def bankroll
       human.bankroll
     end
+
+    def reset
+      @dealer = Dealer.new
+      @human = Human.new
+      @late_over = false
+    end
   end
 
 

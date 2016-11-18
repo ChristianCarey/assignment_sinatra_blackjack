@@ -19,7 +19,8 @@ end
 
 get '/deal' do
   bet = params[:bet].to_i
-  redirect('/') if bet > @game.bankroll
+  redirect('/') if bet > @game.bankroll || bet < 0
+  @game.reset
   @game.set_bet(bet)
   session["game"] = @game.to_json
   erb :blackjack
